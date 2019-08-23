@@ -20,6 +20,10 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
 # Serializers define the API representation.
+from api_movies import views
+from api_movies.models import Movie
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -30,16 +34,23 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-# Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
+# Serializers define the API representation.
+class MovieSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ['id', 'title', 'imbdib']
+
+# ViewSets define the view behavior.
+class MovieViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = UserSerializer
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('movies/', views.Movies.as_view()),
+    #path('movies/<int:pk>/', views.MovieDetails.as_view())
 ]
 
 # urlpatterns = [
